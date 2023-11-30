@@ -1,0 +1,6 @@
+package xyz.furan.flashcard
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
