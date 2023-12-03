@@ -1,16 +1,26 @@
 /*
- * @Author: fuRan NgeKaworu@gmail.com
- * @Date: 2023-12-01 13:33:16
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-01 13:52:49
- * @FilePath: /flashcard/lib/page/route.dart
+ * @Author: NgeKaworu NgeKaworu@163.com
+ * @Date: 2023-12-02 17:46:24
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-03 19:10:45
+ * @FilePath: \flashcard-flutter\lib\src\screen\route.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
-import 'package:flashcard/page/login.dart';
-import 'package:flashcard/page/record.dart';
-import 'package:flashcard/page/review.dart';
+/*
+ * @Author: fuRan NgeKaworu@gmail.com
+ * @Date: 2023-12-01 13:33:16
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-02 21:46:57
+ * @FilePath: \flashcard-flutter\lib\src\screen\route.dart
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+ */
+import 'package:flashcard/src/screen/login.dart';
+import 'package:flashcard/src/screen/record.dart';
+import 'package:flashcard/src/screen/review.dart';
 import 'package:go_router/go_router.dart';
 
 GoRouter router() {
