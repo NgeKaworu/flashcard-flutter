@@ -1,14 +1,15 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-04 13:52:34
- * @FilePath: /flashcard/lib/src/route.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-04 23:45:27
+ * @FilePath: \flashcard-flutter\lib\src\route.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
 import 'package:flashcard/src/auth.dart';
+import 'package:flashcard/src/scaffold/home.dart';
 import 'package:flashcard/src/screen/login.dart';
 import 'package:flashcard/src/screen/record.dart';
 import 'package:flashcard/src/screen/review.dart';
@@ -34,17 +35,8 @@ GoRouter router() {
     routes: [
       ShellRoute(
         navigatorKey: appShellNavigatorKey,
-        builder: (context, state, child) {
-          return BookstoreScaffold(
-            selectedIndex: switch (state.uri.path) {
-              var p when p.startsWith('/books') => 0,
-              var p when p.startsWith('/authors') => 1,
-              var p when p.startsWith('/settings') => 2,
-              _ => 0,
-            },
-            child: child,
-          );
-        },
+        builder: (context, state, child) =>
+            HomeScaffold(state: state, child: child),
         routes: [
           ShellRoute(
             pageBuilder: (context, state, child) {

@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:38:59
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-04 14:03:31
- * @FilePath: /flashcard/lib/src/scaffold/home.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-04 23:38:32
+ * @FilePath: \flashcard-flutter\lib\src\scaffold\home.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -16,11 +16,11 @@ import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class BookstoreScaffold extends StatelessWidget {
+class HomeScaffold extends StatelessWidget {
   final Widget child;
   final GoRouterState state;
 
-  const BookstoreScaffold({
+  const HomeScaffold({
     required this.child,
     required this.state,
     super.key,
@@ -30,6 +30,13 @@ class BookstoreScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final goRouter = GoRouter.of(context);
 
+    var selectedIndex = switch (state.uri.path) {
+      var p when p.startsWith('/books') => 0,
+      var p when p.startsWith('/authors') => 1,
+      var p when p.startsWith('/settings') => 2,
+      _ => 0,
+    };
+    
     return Scaffold(
       body: AdaptiveNavigationScaffold(
         selectedIndex: selectedIndex,
@@ -48,10 +55,7 @@ class BookstoreScaffold extends StatelessWidget {
             title: '复习',
             icon: Icons.sync,
           ),
-          AdaptiveScaffoldDestination(
-            title: '我的',
-            icon: Icons.person
-          ),
+          AdaptiveScaffoldDestination(title: '我的', icon: Icons.person),
         ],
       ),
     );
