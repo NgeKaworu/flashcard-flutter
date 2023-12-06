@@ -2,14 +2,14 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-05 14:10:42
+ * @LastEditTime: 2023-12-06 13:50:06
  * @FilePath: /flashcard/lib/src/route.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
 import 'package:flashcard/src/auth.dart';
-import 'package:flashcard/src/scaffold/home.dart';
+import 'package:flashcard/src/layout/home.dart';
 import 'package:flashcard/src/screen/login.dart';
 import 'package:flashcard/src/screen/my.dart';
 import 'package:flashcard/src/screen/record.dart';

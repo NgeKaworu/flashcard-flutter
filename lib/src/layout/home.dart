@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:38:59
- * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-04 23:38:32
- * @FilePath: \flashcard-flutter\lib\src\scaffold\home.dart
+ * @LastEditors: fuRan NgeKaworu@gmail.com
+ * @LastEditTime: 2023-12-06 13:55:13
+ * @FilePath: /flashcard/lib/src/layout/home.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -31,9 +31,9 @@ class HomeScaffold extends StatelessWidget {
     final goRouter = GoRouter.of(context);
 
     var selectedIndex = switch (state.uri.path) {
-      var p when p.startsWith('/books') => 0,
-      var p when p.startsWith('/authors') => 1,
-      var p when p.startsWith('/settings') => 2,
+      var p when p.startsWith('/record') => 0,
+      var p when p.startsWith('/review') => 1,
+      var p when p.startsWith('/my') => 2,
       _ => 0,
     };
     
