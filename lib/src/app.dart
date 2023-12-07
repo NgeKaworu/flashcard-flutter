@@ -2,15 +2,15 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:04:42
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-06 13:38:17
+ * @LastEditTime: 2023-12-07 14:13:04
  * @FilePath: /flashcard/lib/src/app.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
-import 'package:flashcard/provider/golbal.dart';
+import 'package:flashcard/src/provider/global.dart';
 import 'package:flashcard/src/auth.dart';
-import 'package:flashcard/src/theme/mainTheme.dart';
+import 'package:flashcard/src/theme/main_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

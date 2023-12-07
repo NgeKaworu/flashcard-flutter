@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-06 13:50:06
+ * @LastEditTime: 2023-12-07 14:14:10
  * @FilePath: /flashcard/lib/src/route.dart
  * @Description: 
  * 
@@ -22,9 +22,9 @@ final appShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'app shell');
 final booksNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'books shell');
 
 final homeRoutes = {
-  "/review": Review(),
-  "/record": Record(),
-  "/my": My(),
+  "/record": const Record(),
+  "/review": const Review(),
+  "/my": const My(),
 };
 
 GoRouter router() {
@@ -32,11 +32,11 @@ GoRouter router() {
   return GoRouter(
     refreshListenable: auth,
     debugLogDiagnostics: true,
-    initialLocation: '/books/popular',
+    initialLocation: '/record',
     redirect: (context, state) {
       final signedIn = Auth.of(context).signedIn;
-      if (state.uri.toString() != '/sign-in' && !signedIn) {
-        return '/sign-in';
+      if (state.uri.toString() != '/login' && !signedIn) {
+        return '/login';
       }
       return null;
     },
@@ -60,7 +60,7 @@ GoRouter router() {
             .toList(),
       ),
       GoRoute(
-        path: '/sign-in',
+        path: '/login',
         builder: (context, state) {
           // Use a builder to get the correct BuildContext
           return Builder(
