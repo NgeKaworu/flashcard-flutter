@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-07 18:05:16
+ * @LastEditTime: 2023-12-08 13:49:34
  * @FilePath: /flashcard/lib/src/screen/login.dart
  * @Description: 
  * 
@@ -26,6 +26,10 @@ class _LoginState extends State<Login> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  final _fromField = {
+    'email': TextEditingController(),
+    'password': TextEditingController(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +67,7 @@ class _LoginState extends State<Login> {
                             Column(
                               children: [
                                 TextFormField(
+                                  controller: _fromField['email'],
                                   decoration: const InputDecoration(
                                     hintText: '邮箱',
                                     prefixIcon: Icon(Icons.email_outlined),
@@ -75,6 +80,7 @@ class _LoginState extends State<Login> {
                                   },
                                 ),
                                 TextFormField(
+                                  controller: _fromField['pwd'],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return '请输入密码';
@@ -113,6 +119,7 @@ class _LoginState extends State<Login> {
                                 onPressed: () {
                                   // Validate returns true if the form is valid, or false otherwise.
                                   if (_formKey.currentState!.validate()) {
+
                                     // If the form is valid, display a snackbar. In the real world,
                                     // you'd often call a server or save the information in a database.
                                     ScaffoldMessenger.of(context).showSnackBar(
