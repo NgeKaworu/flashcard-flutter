@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-10 22:13:18
+ * @LastEditTime: 2023-12-10 23:46:23
  * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
@@ -39,12 +39,16 @@ class _AccountState extends State<Account> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  final _fromField = {
-    'email': TextEditingController(),
-    'password': TextEditingController(),
-  };
+  final _fromField = Map.fromIterable([
+    'name',
+    'email',
+    'captcha',
+    'password',
+    'confirmPwd',
+  ], value: (_) => TextEditingController());
 
   var showPwd = false;
+  var showConfirmPwd = false;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +100,20 @@ class _AccountState extends State<Account> {
                                   Column(
                                     children: [
                                       TextFormField(
+                                        controller: _fromField['name'],
+                                        decoration: const InputDecoration(
+                                          hintText: '用户名',
+                                          prefixIcon:
+                                              Icon(Icons.email_outlined),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return '请输入用户名';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      TextFormField(
                                         controller: _fromField['email'],
                                         decoration: const InputDecoration(
                                           hintText: '邮箱',
@@ -105,6 +123,29 @@ class _AccountState extends State<Account> {
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
                                             return '请输入邮箱';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      TextFormField(
+                                        controller: _fromField['captcha'],
+                                        decoration: InputDecoration(
+                                          hintText: '验证码',
+                                          prefixIcon:
+                                              const Icon(Icons.email_outlined),
+                                          suffixIcon: TextButton(
+                                              onPressed: () {},
+                                              child: const Text('获取验证码'),
+                                              style: ButtonStyle(
+                                                padding: MaterialStateProperty
+                                                    .all<EdgeInsets>(
+                                                        const EdgeInsets.all(
+                                                            0)),
+                                              )),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return '请输入验证码';
                                           }
                                           return null;
                                         },
@@ -133,6 +174,32 @@ class _AccountState extends State<Account> {
                                               },
                                             )),
                                         obscureText: !showPwd,
+                                      ),
+                                      TextFormField(
+                                        controller: _fromField['confirmPwd'],
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return '请输入确认密码';
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                            hintText: '确认密码',
+                                            prefixIcon:
+                                                const Icon(Icons.lock_outline),
+                                            suffixIcon: IconButton(
+                                              icon: showConfirmPwd
+                                                  ? const Icon(Icons.visibility)
+                                                  : const Icon(
+                                                      Icons.visibility_off),
+                                              onPressed: () {
+                                                setState(() {
+                                                  showConfirmPwd =
+                                                      !showConfirmPwd;
+                                                });
+                                              },
+                                            )),
+                                        obscureText: !showConfirmPwd,
                                       ),
                                     ],
                                   ),
