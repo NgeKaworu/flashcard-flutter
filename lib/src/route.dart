@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-10 15:49:57
+ * @LastEditTime: 2023-12-10 21:46:05
  * @FilePath: \flashcard-flutter\lib\src\route.dart
  * @Description: 
  * 
@@ -10,7 +10,7 @@
  */
 import 'package:flashcard/src/auth.dart';
 import 'package:flashcard/src/layout/home.dart';
-import 'package:flashcard/src/screen/login.dart';
+import 'package:flashcard/src/screen/account.dart';
 import 'package:flashcard/src/screen/my.dart';
 import 'package:flashcard/src/screen/record.dart';
 import 'package:flashcard/src/screen/review.dart';
@@ -35,8 +35,8 @@ GoRouter router() {
     initialLocation: '/record',
     redirect: (context, state) {
       final signedIn = Auth.of(context).signedIn;
-      if (!state.uri.toString().startsWith('/login') && !signedIn) {
-        return '/login';
+      if (!state.uri.toString().startsWith('/account') && !signedIn) {
+        return '/account/login';
       }
       return null;
     },
@@ -60,12 +60,12 @@ GoRouter router() {
             .toList(),
       ),
       GoRoute(
-        path: '/login',
+        path: '/account/:entry',
         builder: (context, state) {
           // Use a builder to get the correct BuildContext
           return Builder(
             builder: (context) {
-              return const Login();
+              return Account(routerState: state);
             },
           );
         },

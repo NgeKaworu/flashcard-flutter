@@ -2,25 +2,37 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-10 16:41:24
- * @FilePath: \flashcard-flutter\lib\src\screen\login.dart
+ * @LastEditTime: 2023-12-10 22:13:18
+ * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 const phi = 1.618, width = 357.0, height = width * phi;
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+const entryMap = {
+  'register': '注册',
+  'login': '登录',
+  'forget-pwd': '重置密码',
+};
+
+class Account extends StatefulWidget {
+  final GoRouterState routerState;
+
+  const Account({
+    required this.routerState,
+    super.key,
+  });
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Account> createState() => _AccountState();
 }
 
-class _LoginState extends State<Login> {
+class _AccountState extends State<Account> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
@@ -36,8 +48,13 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var entry = widget.routerState.pathParameters['entry'] ?? "login";
+    var title = entryMap[entry]!;
+    var router = GoRouter.of(context);
+
     // Build a Form widget using the _formKey created above.
     return Scaffold(
+      backgroundColor: const Color(0xFFEEEEEE),
       body: SafeArea(
         child: Form(
             key: _formKey,
@@ -54,15 +71,16 @@ class _LoginState extends State<Login> {
                     child: Card(
                       child: Column(
                         children: [
-                          const Expanded(
+                          Expanded(
                             flex: 0,
                             child: Column(children: [
                               ListTile(
                                   title: Text(
-                                '登录',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               )),
-                              Divider(
+                              const Divider(
                                 height: 0,
                               ),
                             ]),
@@ -145,10 +163,10 @@ class _LoginState extends State<Login> {
                                                   BorderRadius.circular(8.0),
                                             ),
                                           ),
-                                          child: const Text(
-                                            '登录',
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                          child: Text(
+                                            title,
+                                            style: const TextStyle(
+                                                color: Colors.white),
                                           ),
                                         ),
                                       ),
@@ -156,24 +174,46 @@ class _LoginState extends State<Login> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          TextButton(
-                                            onPressed: () {},
-                                            style: ButtonStyle(
-                                              padding: MaterialStateProperty
-                                                  .all<EdgeInsets>(
-                                                      const EdgeInsets.all(0)),
-                                            ),
-                                            child: const Text('没有账号?现在注册!'),
-                                          ),
-                                          TextButton(
-                                              onPressed: () {},
+                                          if (entry != "login")
+                                            TextButton(
+                                              onPressed: () {
+                                                router.go('/account/login');
+                                              },
                                               style: ButtonStyle(
                                                 padding: MaterialStateProperty
                                                     .all<EdgeInsets>(
                                                         const EdgeInsets.all(
                                                             0)),
                                               ),
-                                              child: const Text('忘记密码?')),
+                                              child: const Text('已有账号?现在登录!'),
+                                            ),
+                                          if (entry != "register")
+                                            TextButton(
+                                                onPressed: () {
+                                                  router
+                                                      .go('/account/register');
+                                                },
+                                                style: ButtonStyle(
+                                                  padding: MaterialStateProperty
+                                                      .all<EdgeInsets>(
+                                                          const EdgeInsets.all(
+                                                              0)),
+                                                ),
+                                                child:
+                                                    const Text('没有账号？现在注册！')),
+                                          if (entry != "forget-pwd")
+                                            TextButton(
+                                                onPressed: () {
+                                                  router.go(
+                                                      '/account/forget-pwd');
+                                                },
+                                                style: ButtonStyle(
+                                                  padding: MaterialStateProperty
+                                                      .all<EdgeInsets>(
+                                                          const EdgeInsets.all(
+                                                              0)),
+                                                ),
+                                                child: const Text('忘记密码?'))
                                         ],
                                       )
                                     ],
