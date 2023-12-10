@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-07 14:14:10
- * @FilePath: /flashcard/lib/src/route.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-10 15:49:57
+ * @FilePath: \flashcard-flutter\lib\src\route.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -35,7 +35,7 @@ GoRouter router() {
     initialLocation: '/record',
     redirect: (context, state) {
       final signedIn = Auth.of(context).signedIn;
-      if (state.uri.toString() != '/login' && !signedIn) {
+      if (!state.uri.toString().startsWith('/login') && !signedIn) {
         return '/login';
       }
       return null;
