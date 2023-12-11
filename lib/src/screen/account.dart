@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-11 22:32:19
+ * @LastEditTime: 2023-12-11 23:10:00
  * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
@@ -54,7 +54,7 @@ class _AccountState extends State<Account> {
     'name',
     'email',
     'captcha',
-    'password',
+    'pwd',
     'confirmPwd',
   ], value: (_) => TextEditingController());
 
@@ -93,6 +93,17 @@ class _AccountState extends State<Account> {
             .format(DateTime.now().add(const Duration(seconds: captchaCount))));
 
     startTimer();
+  }
+
+  void onSubmit() async {
+    // Validate returns true if the form is valid, or false otherwise.
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Processing Data')),
+      );
+    }
   }
 
   @override
@@ -136,7 +147,6 @@ class _AccountState extends State<Account> {
       backgroundColor: const Color(0xFFEEEEEE),
       body: SafeArea(
         child: Form(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
             child: Center(
               child: SingleChildScrollView(
@@ -177,6 +187,8 @@ class _AccountState extends State<Account> {
                                     children: [
                                       if (entry == "register")
                                         TextFormField(
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
                                           controller: _fromField['name'],
                                           decoration: const InputDecoration(
                                             hintText: '用户名',
@@ -192,6 +204,8 @@ class _AccountState extends State<Account> {
                                           },
                                         ),
                                       TextFormField(
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
                                         key: _emailFieldKey,
                                         controller: _fromField['email'],
                                         decoration: const InputDecoration(
@@ -217,6 +231,8 @@ class _AccountState extends State<Account> {
                                       ),
                                       if (entry != "login")
                                         TextFormField(
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
                                           controller: _fromField['captcha'],
                                           decoration: InputDecoration(
                                               hintText: '验证码',
@@ -269,6 +285,8 @@ class _AccountState extends State<Account> {
                                           },
                                         ),
                                       TextFormField(
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
                                         controller: _fromField['pwd'],
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -301,6 +319,8 @@ class _AccountState extends State<Account> {
                                       ),
                                       if (entry != "login")
                                         TextFormField(
+                                          autovalidateMode: AutovalidateMode
+                                              .onUserInteraction,
                                           controller: _fromField['confirmPwd'],
                                           validator: (value) {
                                             if (value == null ||
@@ -309,7 +329,7 @@ class _AccountState extends State<Account> {
                                             }
 
                                             if (value !=
-                                                _fromField['pwd']!.text) {
+                                                _fromField['pwd']?.text) {
                                               return "两次密码不一致";
                                             }
 
@@ -341,20 +361,7 @@ class _AccountState extends State<Account> {
                                       SizedBox(
                                         width: double.infinity,
                                         child: ElevatedButton(
-                                          onPressed: () {
-                                            // Validate returns true if the form is valid, or false otherwise.
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              // If the form is valid, display a snackbar. In the real world,
-                                              // you'd often call a server or save the information in a database.
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                    content: Text(
-                                                        'Processing Data')),
-                                              );
-                                            }
-                                          },
+                                          onPressed: onSubmit,
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Theme.of(context)
                                                 .primaryColor, // Set the button color to primaryColor
