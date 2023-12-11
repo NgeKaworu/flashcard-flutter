@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-11 13:59:15
+ * @LastEditTime: 2023-12-11 17:12:47
  * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
@@ -13,6 +13,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const phi = 1.618, width = 357.0, height = width * phi;
@@ -22,6 +23,11 @@ const entryMap = {
   'login': '登录',
   'forget-pwd': '重置密码',
 };
+
+const format = "yyyy-MM-dd HH:mm:ss";
+var dateFormat = DateFormat(format);
+
+const captchaCount = 60;
 
 class Account extends StatefulWidget {
   final GoRouterState routerState;
@@ -54,18 +60,16 @@ class _AccountState extends State<Account> {
   var showConfirmPwd = false;
 
   Timer? _timer;
-  int _countdown = 60;
+  int _countdown = captchaCount;
 
-  void fetchCaptcha() {
+  void startTimer() {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
-      (Timer timer) async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-
+      (Timer timer) {
         if (_countdown == 0) {
           timer.cancel();
           setState(() {
-            _countdown = 60;
+            _countdown = captchaCount;
           });
         } else {
           setState(() {
@@ -74,6 +78,40 @@ class _AccountState extends State<Account> {
         }
       },
     );
+  }
+
+  void fetchCaptcha() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        'next_fetch_captcha_at',
+        dateFormat
+            .format(DateTime.now().add(const Duration(seconds: captchaCount))));
+
+    startTimer();
+  }
+
+  @override
+  initState() {
+    super.initState();
+    (() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var nextFetchCaptchaAtStr = prefs.getString('next_fetch_captcha_at');
+      if (nextFetchCaptchaAtStr == null) {
+        return;
+      }
+
+      var nextFetchCaptchaAt = dateFormat.parse(nextFetchCaptchaAtStr);
+
+      var difference = nextFetchCaptchaAt.difference(DateTime.now());
+
+      if (difference.inSeconds > 0) {
+        setState(() {
+          _countdown = difference.inSeconds;
+          startTimer();
+        });
+      }
+    })();
   }
 
   @override
@@ -173,11 +211,12 @@ class _AccountState extends State<Account> {
                                               prefixIcon: const Icon(
                                                   Icons.comment_outlined),
                                               suffixIcon: TextButton(
-                                                  onPressed: _countdown != 60
-                                                      ? null
-                                                      : () {
-                                                          fetchCaptcha();
-                                                        },
+                                                  onPressed:
+                                                      _countdown != captchaCount
+                                                          ? null
+                                                          : () {
+                                                              fetchCaptcha();
+                                                            },
                                                   style: ButtonStyle(
                                                     padding:
                                                         MaterialStateProperty
@@ -185,9 +224,10 @@ class _AccountState extends State<Account> {
                                                                 const EdgeInsets
                                                                     .all(0)),
                                                   ),
-                                                  child: Text(_countdown == 60
-                                                      ? '获取验证码'
-                                                      : "$_countdown秒"))),
+                                                  child: Text(
+                                                      _countdown == captchaCount
+                                                          ? '获取验证码'
+                                                          : "$_countdown秒"))),
                                           validator: (value) {
                                             if (value == null ||
                                                 value.isEmpty) {
