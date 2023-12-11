@@ -1,8 +1,8 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-11 18:40:30
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-11 22:32:19
  * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
@@ -136,6 +136,7 @@ class _AccountState extends State<Account> {
       backgroundColor: const Color(0xFFEEEEEE),
       body: SafeArea(
         child: Form(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             key: _formKey,
             child: Center(
               child: SingleChildScrollView(
@@ -244,6 +245,14 @@ class _AccountState extends State<Account> {
                                                           ? '获取验证码'
                                                           : "$_countdown秒"))),
                                           validator: (value) {
+                                            if (_fromField['email']?.text ==
+                                                    null ||
+                                                _fromField['email']!
+                                                    .text
+                                                    .isEmpty) {
+                                              return "请先检验邮箱";
+                                            }
+
                                             if (value == null ||
                                                 value.isEmpty) {
                                               return '请输入验证码';
@@ -269,7 +278,7 @@ class _AccountState extends State<Account> {
                                           if (!RegExp(
                                                   r'^(?![0-9]+$)(?![A-Z]+$)(?![a-z]+$)[0-9A-Za-z]{8,}$')
                                               .hasMatch(value)) {
-                                            return "密码8位字符以上，包含字母大小写和数字中两种和以上";
+                                            return "密码长度8位需包含字母大小写和数字中两种和以上";
                                           }
                                           return null;
                                         },
