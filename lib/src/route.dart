@@ -1,8 +1,8 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
- * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-10 21:46:05
+ * @LastEditors: fuRan NgeKaworu@gmail.com
+ * @LastEditTime: 2023-12-11 13:30:45
  * @FilePath: \flashcard-flutter\lib\src\route.dart
  * @Description: 
  * 
@@ -36,7 +36,7 @@ GoRouter router() {
     redirect: (context, state) {
       final signedIn = Auth.of(context).signedIn;
       if (!state.uri.toString().startsWith('/account') && !signedIn) {
-        return '/account/login';
+        return '/account/register';
       }
       return null;
     },
