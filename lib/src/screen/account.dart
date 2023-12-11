@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-11 18:02:50
+ * @LastEditTime: 2023-12-11 18:40:30
  * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
@@ -202,6 +202,15 @@ class _AccountState extends State<Account> {
                                           if (value == null || value.isEmpty) {
                                             return '请输入邮箱';
                                           }
+
+                                          if (!RegExp(
+                                                  r"^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$")
+                                              .hasMatch(value)) {
+                                            return '请输入正确的邮箱';
+                                          }
+
+                                          // undo 异步校验
+
                                           return null;
                                         },
                                       ),
@@ -239,6 +248,14 @@ class _AccountState extends State<Account> {
                                                 value.isEmpty) {
                                               return '请输入验证码';
                                             }
+
+                                            if (!RegExp(r'^[0-9]{4}$')
+                                                .hasMatch(value)) {
+                                              return "请输入4位数验证码";
+                                            }
+
+                                            // undo 异步校验
+
                                             return null;
                                           },
                                         ),
@@ -247,6 +264,12 @@ class _AccountState extends State<Account> {
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
                                             return '请输入密码';
+                                          }
+
+                                          if (!RegExp(
+                                                  r'^(?![0-9]+$)(?![A-Z]+$)(?![a-z]+$)[0-9A-Za-z]{8,}$')
+                                              .hasMatch(value)) {
+                                            return "密码8位字符以上，包含字母大小写和数字中两种和以上";
                                           }
                                           return null;
                                         },
@@ -275,6 +298,12 @@ class _AccountState extends State<Account> {
                                                 value.isEmpty) {
                                               return '请输入确认密码';
                                             }
+
+                                            if (value !=
+                                                _fromField['pwd']!.text) {
+                                              return "两次密码不一致";
+                                            }
+
                                             return null;
                                           },
                                           decoration: InputDecoration(
