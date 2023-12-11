@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-11 17:12:47
+ * @LastEditTime: 2023-12-11 18:02:50
  * @FilePath: \flashcard-flutter\lib\src\screen\Account.dart
  * @Description: 
  * 
@@ -48,6 +48,8 @@ class _AccountState extends State<Account> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  final _emailFieldKey = GlobalKey<FormFieldState>();
+
   final _fromField = Map.fromIterable([
     'name',
     'email',
@@ -81,6 +83,9 @@ class _AccountState extends State<Account> {
   }
 
   void fetchCaptcha() async {
+    if (!_emailFieldKey.currentState!.validate()) {
+      return;
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(
         'next_fetch_captcha_at',
@@ -186,6 +191,7 @@ class _AccountState extends State<Account> {
                                           },
                                         ),
                                       TextFormField(
+                                        key: _emailFieldKey,
                                         controller: _fromField['email'],
                                         decoration: const InputDecoration(
                                           hintText: '邮箱',
