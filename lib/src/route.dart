@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-11 13:30:45
+ * @LastEditTime: 2023-12-13 17:38:15
  * @FilePath: \flashcard-flutter\lib\src\route.dart
  * @Description: 
  * 
@@ -16,7 +16,9 @@ import 'package:flashcard/src/screen/record.dart';
 import 'package:flashcard/src/screen/review.dart';
 import 'package:flashcard/src/widget/fade_transition_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 final appShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'app shell');
 final booksNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'books shell');
@@ -30,6 +32,7 @@ final homeRoutes = {
 GoRouter router() {
   final Auth auth = Auth();
   return GoRouter(
+    observers: [TalkerRouteObserver(GetIt.instance<Talker>())],
     refreshListenable: auth,
     debugLogDiagnostics: true,
     initialLocation: '/record',
