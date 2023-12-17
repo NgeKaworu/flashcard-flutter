@@ -1,3 +1,9 @@
+/*
+ * @Date: 2023-12-17 18:03:27
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-17 18:39:04
+ * @FilePath: \flashcard-flutter\lib\src\client\talker.dart
+ */
 import 'package:get_it/get_it.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -23,7 +29,7 @@ void initTalker() {
     talker: GetIt.instance<Talker>(),
     settings: const TalkerDioLoggerSettings(
       printRequestHeaders: true,
-      printResponseHeaders: true,
+      printResponseHeaders: false,
       printRequestData: true,
       printResponseData: true,
     ),
