@@ -16,6 +16,26 @@ class Extra {
   Extra({this.sneakyThrows, this.notify, this.reAuth});
 }
 
+// 状态码对映的消息
+const codeMessage = {
+  200: '操作成功。',
+  201: '新建或修改数据成功。',
+  202: '一个请求已经进入后台排队（异步任务）。',
+  204: '删除数据成功。',
+  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
+  401: '用户没有权限（令牌、用户名、密码错误）。',
+  403: '用户得到授权，但是访问是被禁止的。',
+  404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
+  405: '请求方式不对',
+  406: '请求的格式不可得。',
+  410: '请求的资源被永久删除，且不会再得到的。',
+  422: '当创建一个对象时，发生一个验证错误。',
+  500: '服务器发生错误，请检查服务器。',
+  502: '网关错误。',
+  503: '服务不可用，服务器暂时过载或维护。',
+  504: '网关超时。',
+};
+
 void initDio() {
   // Or create `Dio` with a `BaseOptions` instance.
   final options = BaseOptions(
@@ -37,7 +57,19 @@ void initDio() {
       // 如果你想完成请求并返回一些自定义数据，你可以使用 `handler.resolve(response)`。
       // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      options.headers['Authorization'] = 'Bearer ${prefs.getString("token")}';
+      options.headers['Authorization'] = options.headers['Authorization'] ??
+          'Bearer ${prefs.getString("token")}';
+      return handler.next(options);
+    },
+  ));
+
+  // default extra
+  dio.interceptors.add(InterceptorsWrapper(
+    onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+      // 如果你想完成请求并返回一些自定义数据，你可以使用 `handler.resolve(response)`。
+      // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
+
+      options.extra['sneakyThrows'] = options.extra['sneakyThrows'] ?? true;
       return handler.next(options);
     },
   ));
@@ -61,22 +93,53 @@ void initDio() {
   // success notify
   dio.interceptors.add(InterceptorsWrapper(
     onResponse: (Response response, ResponseInterceptorHandler handler) {
-      if ([true, 'success'].contains(response.requestOptions.extra["notify"] ?? false)) {
+      // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
+      if ([true, 'success']
+          .contains(response.requestOptions.extra["notify"] ?? false)) {
         Fluttertoast.showToast(msg: response.data["message"] ?? '操作成功');
       }
 
-      // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
       return handler.next(response);
     },
   ));
 
+// error handler
   dio.interceptors.add(InterceptorsWrapper(
-    onResponse: (Response response, ResponseInterceptorHandler handler) {
-      // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
-      return handler.next(response);
-    },
     onError: (DioException error, ErrorInterceptorHandler handler) {
       // 如果你想完成请求并返回一些自定义数据，你可以使用 `handler.resolve(response)`。
+      var message = error.message;
+      var response = error.response;
+      var extra = error.requestOptions.extra;
+
+      // undo
+      if (response?.statusCode == 401) {
+        return (extra['reAuth'] ?? false)
+            ? print('reAuth')
+            : Fluttertoast.showToast(msg: '请重新登录');
+      }
+
+      if ([true, 'fail'].contains(extra["notify"] ?? false)) {
+        var netErrMsg = message?.contains('connection errored') == true
+            ? '网络错误，请检查网络。'
+            : null;
+
+        var content =
+            // 网络错误
+            netErrMsg ??
+                message ??
+                // 错误码错误
+                codeMessage[response?.statusCode] ??
+                '未知错误';
+
+        Fluttertoast.showToast(msg: content);
+      }
+
+      // 偷偷摸摸抛异常
+      if (extra["sneakyThrows"]) {
+        return handler.resolve(
+            response ?? Response(requestOptions: error.requestOptions));
+      }
+
       return handler.next(error);
     },
   ));
