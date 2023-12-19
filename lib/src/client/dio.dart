@@ -105,7 +105,7 @@ void initDio() {
 
 // error handler
   dio.interceptors.add(InterceptorsWrapper(
-    onError: (DioException error, ErrorInterceptorHandler handler) {
+    onError: (DioException error, ErrorInterceptorHandler handler) async {
       // 如果你想完成请求并返回一些自定义数据，你可以使用 `handler.resolve(response)`。
       var message = error.message;
       var response = error.response;
@@ -113,9 +113,56 @@ void initDio() {
 
       // undo
       if (response?.statusCode == 401) {
-        return (extra['reAuth'] ?? false)
-            ? print('reAuth')
-            : Fluttertoast.showToast(msg: '请重新登录');
+        if (extra['reAuth'] ?? false) {
+          try {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            var res = await dio.get('/uc/oauth2/refresh',
+                queryParameters: {"token": prefs.getString("refresh_token")},
+                options: Options(
+                  extra: {
+                    "reAuth": false,
+                    "notify": 'fail',
+                  },
+                ));
+            prefs.setString('token', res.data["token"]);
+            prefs.setString('refresh_token', res.data["refresh_token"]);
+
+            var extra = error.requestOptions.extra;
+            extra['reAuth'] = false;
+
+            return handler.resolve(await dio.request(error.requestOptions.path,
+                data: error.requestOptions.data,
+                queryParameters: error.requestOptions.queryParameters,
+                cancelToken: error.requestOptions.cancelToken,
+                onSendProgress: error.requestOptions.onSendProgress,
+                onReceiveProgress: error.requestOptions.onReceiveProgress,
+                options: Options(
+                  method: error.requestOptions.method,
+                  sendTimeout: error.requestOptions.sendTimeout,
+                  receiveTimeout: error.requestOptions.receiveTimeout,
+                  extra: extra,
+                  headers: error.requestOptions.headers,
+                  preserveHeaderCase: error.requestOptions.preserveHeaderCase,
+                  responseType: error.requestOptions.responseType,
+                  contentType: error.requestOptions.contentType,
+                  validateStatus: error.requestOptions.validateStatus,
+                  receiveDataWhenStatusError:
+                      error.requestOptions.receiveDataWhenStatusError,
+                  followRedirects: error.requestOptions.followRedirects,
+                  maxRedirects: error.requestOptions.maxRedirects,
+                  persistentConnection:
+                      error.requestOptions.persistentConnection,
+                  requestEncoder: error.requestOptions.requestEncoder,
+                  responseDecoder: error.requestOptions.responseDecoder,
+                  listFormat: error.requestOptions.listFormat,
+                )));
+          } catch (e) {
+            handler.reject(error);
+          
+          }
+        } else {
+          Fluttertoast.showToast(msg: '请重新登录');
+        }
       }
 
       if ([true, 'fail'].contains(extra["notify"] ?? false)) {
