@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:04:42
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-07 14:13:04
+ * @LastEditTime: 2023-12-19 17:59:48
  * @FilePath: /flashcard/lib/src/app.dart
  * @Description: 
  * 
@@ -40,7 +40,7 @@ class App extends StatelessWidget {
             child: child,
           );
         },
-        routerConfig: router(),
+        routerConfig: router,
       ),
     );
   }

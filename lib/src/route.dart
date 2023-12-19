@@ -2,8 +2,8 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-13 17:38:15
- * @FilePath: \flashcard-flutter\lib\src\route.dart
+ * @LastEditTime: 2023-12-19 17:59:34
+ * @FilePath: /flashcard/lib/src/route.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -29,7 +29,7 @@ final homeRoutes = {
   "/my": const My(),
 };
 
-GoRouter router() {
+GoRouter genRouter() {
   final Auth auth = Auth();
   return GoRouter(
     observers: [TalkerRouteObserver(GetIt.instance<Talker>())],
@@ -76,3 +76,5 @@ GoRouter router() {
     ],
   );
 }
+
+final router = genRouter();

@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
+
+import 'package:flashcard/src/route.dart';
 
 class Extra {
   // 是否偷偷摸摸抛异常
@@ -162,6 +165,7 @@ void initDio() {
           }
         } else {
           Fluttertoast.showToast(msg: '请重新登录');
+          router.go("/account/login");
         }
       }
 
