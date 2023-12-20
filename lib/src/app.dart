@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:04:42
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-19 17:59:48
+ * @LastEditTime: 2023-12-20 13:28:47
  * @FilePath: /flashcard/lib/src/app.dart
  * @Description: 
  * 
@@ -21,8 +21,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Auth auth = Auth();
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(

@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
- * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-17 21:45:45
- * @FilePath: \flashcard-flutter\lib\src\screen\account.dart
+ * @LastEditors: fuRan NgeKaworu@gmail.com
+ * @LastEditTime: 2023-12-20 14:04:02
+ * @FilePath: /flashcard/lib/src/screen/account.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -12,13 +12,11 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flashcard/src/client/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 
 const phi = 1.618, width = 357.0, height = width * phi;
 
@@ -100,9 +98,15 @@ class _AccountState extends State<Account> {
   }
 
   void onSubmit() async {
+    // var res = await GetIt.instance<Dio>().get(
+    //   "user-center/user/validate",
+    //   // queryParameters: {"email": "ngekaworu@qq.com"},
+    //   queryParameters: {"email": "ngekaworu@163.com"},
+    //   options: Options(extra: {"notify": true}),
+    // );
     var res = await GetIt.instance<Dio>().get(
-      "user-center/user/validate",
-      queryParameters: {"email": "ngekaworu@qq.com"},
+      "/flashcard/record/list",
+      queryParameters: {"skip": 0, "limit": 15, "inReview": true},
       options: Options(extra: {"notify": true}),
     );
 

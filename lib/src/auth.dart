@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:04:42
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-04 13:09:35
+ * @LastEditTime: 2023-12-20 13:28:35
  * @FilePath: /flashcard/lib/src/auth.dart
  * @Description: 
  * 
@@ -43,9 +43,8 @@ class Auth extends ChangeNotifier {
   @override
   int get hashCode => _signedIn.hashCode;
 
-  static Auth of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<AuthScope>()!
-      .notifier!;
+  static Auth of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AuthScope>()!.notifier!;
 }
 
 class AuthScope extends InheritedNotifier<Auth> {
@@ -55,3 +54,5 @@ class AuthScope extends InheritedNotifier<Auth> {
     super.key,
   });
 }
+
+final auth = Auth();

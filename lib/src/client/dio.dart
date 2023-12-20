@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:flashcard/src/auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_flutter/talker_flutter.dart';
-
-import 'package:flashcard/src/route.dart';
 
 class Extra {
   // 是否偷偷摸摸抛异常
@@ -21,12 +20,12 @@ class Extra {
 
 // 状态码对映的消息
 const codeMessage = {
-  200: '操作成功。',
-  201: '新建或修改数据成功。',
-  202: '一个请求已经进入后台排队（异步任务）。',
-  204: '删除数据成功。',
+  // 200: '操作成功。',
+  // 201: '新建或修改数据成功。',
+  // 202: '一个请求已经进入后台排队（异步任务）。',
+  // 204: '删除数据成功。',
   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
+  401: '登录过期，请重新登录',
   403: '用户得到授权，但是访问是被禁止的。',
   404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
   405: '请求方式不对',
@@ -66,17 +65,6 @@ void initDio() {
     },
   ));
 
-  // default extra
-  dio.interceptors.add(InterceptorsWrapper(
-    onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
-      // 如果你想完成请求并返回一些自定义数据，你可以使用 `handler.resolve(response)`。
-      // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
-
-      options.extra['sneakyThrows'] = options.extra['sneakyThrows'] ?? true;
-      return handler.next(options);
-    },
-  ));
-
 // biz checked
   dio.interceptors.add(InterceptorsWrapper(
     onResponse: (Response response, ResponseInterceptorHandler handler) {
@@ -85,11 +73,13 @@ void initDio() {
         return handler.next(response);
       }
 
-      return handler.reject(DioException(
-          requestOptions: response.requestOptions,
-          response: response,
-          error: response.data['errMsg'],
-          type: DioExceptionType.badResponse));
+      return handler.reject(
+          DioException(
+            requestOptions: response.requestOptions,
+            response: response,
+            error: response.data['errMsg'],
+          ),
+          true);
     },
   ));
 
@@ -97,8 +87,7 @@ void initDio() {
   dio.interceptors.add(InterceptorsWrapper(
     onResponse: (Response response, ResponseInterceptorHandler handler) {
       // 如果你想终止请求并触发一个错误，你可以使用 `handler.reject(error)`。
-      if ([true, 'success']
-          .contains(response.requestOptions.extra["notify"] ?? false)) {
+      if ([true, 'success'].contains(response.requestOptions.extra["notify"])) {
         Fluttertoast.showToast(msg: response.data["message"] ?? '操作成功');
       }
 
@@ -114,7 +103,10 @@ void initDio() {
       var response = error.response;
       var extra = error.requestOptions.extra;
 
-      // undo
+      var customErr = message?.contains('connection errored') == true
+          ? '网络错误，请检查网络。'
+          : null;
+
       if (response?.statusCode == 401) {
         if (extra['reAuth'] ?? false) {
           try {
@@ -161,32 +153,28 @@ void initDio() {
                 )));
           } catch (e) {
             handler.reject(error);
-          
           }
         } else {
-          Fluttertoast.showToast(msg: '请重新登录');
-          router.go("/account/login");
+          auth.signOut();
         }
       }
 
-      if ([true, 'fail'].contains(extra["notify"] ?? false)) {
-        var netErrMsg = message?.contains('connection errored') == true
-            ? '网络错误，请检查网络。'
-            : null;
+      var content =
+          // 网络错误
+          customErr ??
+              // 错误码错误
+              codeMessage[response?.statusCode] ??
+              response?.data['errMsg'] ??
+              message ??
+              '未知错误';
 
-        var content =
-            // 网络错误
-            netErrMsg ??
-                message ??
-                // 错误码错误
-                codeMessage[response?.statusCode] ??
-                '未知错误';
-
+      if ([true, 'fail'].contains(extra["notify"])) {
         Fluttertoast.showToast(msg: content);
       }
 
+      print("sneakyThrows: ${extra["sneakyThrows"] ?? true}");
       // 偷偷摸摸抛异常
-      if (extra["sneakyThrows"]) {
+      if (extra["sneakyThrows"] ?? true) {
         return handler.resolve(
             response ?? Response(requestOptions: error.requestOptions));
       }
