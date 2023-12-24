@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-20 14:04:02
- * @FilePath: /flashcard/lib/src/screen/account.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-24 17:11:55
+ * @FilePath: \flashcard-flutter\lib\src\screen\account.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -12,11 +12,16 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flashcard/src/auth.dart';
+import 'package:flashcard/src/route.dart';
+import 'package:flashcard/src/widget/loding_elevated_button.dart';
+import 'package:flashcard/src/widget/loding_text_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 const phi = 1.618, width = 357.0, height = width * phi;
 
@@ -52,13 +57,15 @@ class _AccountState extends State<Account> {
   final _formKey = GlobalKey<FormState>();
   final _emailFieldKey = GlobalKey<FormFieldState>();
 
-  final _fromField = Map.fromIterable([
+  final fields = [
     'name',
     'email',
     'captcha',
     'pwd',
     'confirmPwd',
-  ], value: (_) => TextEditingController());
+  ];
+
+  late Map<String, TextEditingController> _fromField;
 
   var showPwd = false;
   var showConfirmPwd = false;
@@ -88,44 +95,63 @@ class _AccountState extends State<Account> {
     if (!_emailFieldKey.currentState!.validate()) {
       return;
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        'next_fetch_captcha_at',
-        dateFormat
-            .format(DateTime.now().add(const Duration(seconds: captchaCount))));
+    try {
+      await GetIt.instance<Dio>().get(
+        "user-center/user/validate",
+        queryParameters: {"email": _fromField["email"]!.text},
+        options: Options(extra: {"notify": "fail", "sneakyThrows": false}),
+      );
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'next_fetch_captcha_at',
+          dateFormat.format(
+              DateTime.now().add(const Duration(seconds: captchaCount))));
 
-    startTimer();
+      startTimer();
+    } catch (e) {
+      GetIt.instance<Talker>().error(e);
+    }
   }
 
   void onSubmit() async {
-    // var res = await GetIt.instance<Dio>().get(
-    //   "user-center/user/validate",
-    //   // queryParameters: {"email": "ngekaworu@qq.com"},
-    //   queryParameters: {"email": "ngekaworu@163.com"},
-    //   options: Options(extra: {"notify": true}),
-    // );
-    var res = await GetIt.instance<Dio>().get(
-      "/flashcard/record/list",
-      queryParameters: {"skip": 0, "limit": 15, "inReview": true},
-      options: Options(extra: {"notify": true}),
-    );
-
-    // var res = await GetIt.instance<Dio>()
-    // .get("/flashcard/record/list?type=cooling&sort=createAt&orderby=-1&skip=0&limit=15", queryParameters: {"email": "806852390@qq.com"});
-
     // Validate returns true if the form is valid, or false otherwise.
-    // if (_formKey.currentState!.validate()) {
-    //   // If the form is valid, display a snackbar. In the real world,
-    //   // you'd often call a server or save the information in a database.
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Processing Data')),
-    //   );
-    // }
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.
+
+      final map = _fromField.map((key, value) => MapEntry(key, value.text));
+      var entry = widget.routerState.pathParameters['entry'] ?? "login";
+
+      try {
+        if (entry == "register") {
+          await GetIt.instance<Dio>().get(
+            "user-center/captcha/check",
+            queryParameters: {
+              "email": map["email"],
+              "captcha": map["captcha"],
+            },
+            options: Options(extra: {"notify": "fail", "sneakyThrows": false}),
+          );
+        }
+
+        final res = await GetIt.instance<Dio>().post("user-center/$entry",
+            data: map, options: Options(extra: {"notify": true}));
+
+        await auth.signIn(res.data["data"], res.data["refresh_token"]);
+
+        router.replace("/my");
+      } catch (e) {
+        GetIt.instance<Talker>().error(e);
+      }
+    }
   }
 
   @override
   initState() {
     super.initState();
+    _fromField =
+        Map.fromIterable(fields, value: (_) => TextEditingController());
+
     (() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -257,13 +283,11 @@ class _AccountState extends State<Account> {
                                                           double.infinity),
                                               prefixIcon: const Icon(
                                                   Icons.comment_outlined),
-                                              suffixIcon: TextButton(
+                                              suffixIcon: LoadingTextButton(
                                                   onPressed:
                                                       _countdown != captchaCount
                                                           ? null
-                                                          : () {
-                                                              fetchCaptcha();
-                                                            },
+                                                          : fetchCaptcha,
                                                   style: ButtonStyle(
                                                     padding:
                                                         MaterialStateProperty
@@ -373,7 +397,7 @@ class _AccountState extends State<Account> {
                                     children: [
                                       SizedBox(
                                         width: double.infinity,
-                                        child: ElevatedButton(
+                                        child: LoadingElevatedButton(
                                           onPressed: onSubmit,
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Theme.of(context)

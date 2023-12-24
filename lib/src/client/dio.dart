@@ -119,8 +119,7 @@ void initDio() {
                     "notify": 'fail',
                   },
                 ));
-            prefs.setString('token', res.data["token"]);
-            prefs.setString('refresh_token', res.data["refresh_token"]);
+            auth.signIn(res.data["token"], res.data["refresh_token"]);
 
             var extra = error.requestOptions.extra;
             extra['reAuth'] = false;

@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:04:42
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-20 13:28:35
- * @FilePath: /flashcard/lib/src/auth.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-24 17:16:49
+ * @FilePath: \flashcard-flutter\lib\src\auth.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -13,23 +13,34 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// A mock authentication service
 class Auth extends ChangeNotifier {
-  bool _signedIn = false;
+  Auth() {
+    SharedPreferences.getInstance().then((prefs) {
+      _signedIn = prefs.containsKey('token');
+      notifyListeners();
+    });
+  }
+
+  bool _signedIn = true;
 
   bool get signedIn => _signedIn;
 
   Future<void> signOut() async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    prefs.remove('refresh_token');
     // Sign out.
     _signedIn = false;
     notifyListeners();
   }
 
-  Future<bool> signIn(String username, String password) async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-
+  Future<bool> signIn(String token, String? refreshToken) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+    if (null != refreshToken) prefs.setString('refresh_token', refreshToken);
     // Sign in. Allow any password.
     _signedIn = true;
     notifyListeners();

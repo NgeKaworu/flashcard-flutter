@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-19 17:59:34
- * @FilePath: /flashcard/lib/src/route.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-24 17:16:38
+ * @FilePath: \flashcard-flutter\lib\src\route.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -38,8 +38,9 @@ GoRouter genRouter() {
     initialLocation: '/record',
     redirect: (context, state) {
       final signedIn = Auth.of(context).signedIn;
+      GetIt.instance<Talker>().info('signedIn: $signedIn');
       if (!state.uri.toString().startsWith('/account') && !signedIn) {
-        return '/account/register';
+        return '/account/login';
       }
       return null;
     },
