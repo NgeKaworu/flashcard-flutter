@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
- * @LastEditors: NgeKaworu NgeKaworu@163.com
- * @LastEditTime: 2023-12-24 17:11:55
- * @FilePath: \flashcard-flutter\lib\src\screen\account.dart
+ * @LastEditors: fuRan NgeKaworu@gmail.com
+ * @LastEditTime: 2023-12-25 13:50:54
+ * @FilePath: /flashcard/lib/src/screen/account.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -13,7 +13,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flashcard/src/auth.dart';
-import 'package:flashcard/src/route.dart';
 import 'package:flashcard/src/widget/loding_elevated_button.dart';
 import 'package:flashcard/src/widget/loding_text_bottom.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +119,8 @@ class _AccountState extends State<Account> {
       // you'd often call a server or save the information in a database.
 
       final map = _fromField.map((key, value) => MapEntry(key, value.text));
-      var entry = widget.routerState.pathParameters['entry'] ?? "login";
+      final entry = widget.routerState.pathParameters['entry'] ?? "login";
+      final router = GoRouter.of(context);
 
       try {
         if (entry == "register") {
@@ -139,7 +139,7 @@ class _AccountState extends State<Account> {
 
         await auth.signIn(res.data["data"], res.data["refresh_token"]);
 
-        router.replace("/my");
+        router.go('/home/my');
       } catch (e) {
         GetIt.instance<Talker>().error(e);
       }

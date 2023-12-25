@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:38:59
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-06 13:55:13
+ * @LastEditTime: 2023-12-25 13:43:12
  * @FilePath: /flashcard/lib/src/layout/home.dart
  * @Description: 
  * 
@@ -31,9 +31,9 @@ class HomeScaffold extends StatelessWidget {
     final goRouter = GoRouter.of(context);
 
     var selectedIndex = switch (state.uri.path) {
-      var p when p.startsWith('/record') => 0,
-      var p when p.startsWith('/review') => 1,
-      var p when p.startsWith('/my') => 2,
+      var p when p.startsWith('/home/record') => 0,
+      var p when p.startsWith('/home/review') => 1,
+      var p when p.startsWith('/home/my') => 2,
       _ => 0,
     };
     
@@ -42,9 +42,9 @@ class HomeScaffold extends StatelessWidget {
         selectedIndex: selectedIndex,
         body: child,
         onDestinationSelected: (idx) {
-          if (idx == 0) goRouter.go('/record');
-          if (idx == 1) goRouter.go('/review');
-          if (idx == 2) goRouter.go('/my');
+          if (idx == 0) goRouter.go('/home/record');
+          if (idx == 1) goRouter.go('/home/review');
+          if (idx == 2) goRouter.go('/home/my');
         },
         destinations: const [
           AdaptiveScaffoldDestination(
