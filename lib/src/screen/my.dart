@@ -2,15 +2,18 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-26 13:58:50
+ * @LastEditTime: 2023-12-26 18:19:03
  * @FilePath: /flashcard/lib/src/screen/my.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
  */
+import 'package:dio/dio.dart';
 import 'package:flashcard/src/auth.dart';
+import 'package:flashcard/src/model/user.dart';
 import 'package:flashcard/src/theme/main_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class My extends StatefulWidget {
   const My({super.key});
@@ -20,11 +23,11 @@ class My extends StatefulWidget {
 }
 
 class _MyState extends State<My> {
-  Future<String> _loadData() async {
-    // Replace this with your actual data loading code
-    await Future.delayed(Duration(seconds: 2));
-    return 'Hello, world!';
-  }
+  Future<User> _loadData() async =>
+      User.fromJson((await GetIt.instance<Dio>().get(
+        "user-center/profile",
+      ))
+          .data['data']);
 
   @override
   Widget build(BuildContext context) {
@@ -62,34 +65,63 @@ class _MyState extends State<My> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
+                            Row(
                               children: [
-                                FutureBuilder<String>(
+                                FutureBuilder<User>(
                                   future: _loadData(),
                                   builder: (BuildContext context,
-                                      AsyncSnapshot<String> snapshot) {
+                                      AsyncSnapshot<User> snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
+                                      return const CircularProgressIndicator();
                                     } else if (snapshot.hasError) {
                                       return Text('Error: ${snapshot.error}');
                                     } else {
-                                      return SingleChildScrollView(
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 8.0,
-                                            bottom: MediaQuery.of(context)
-                                                    .viewInsets
-                                                    .bottom +
-                                                8.0,
-                                          ),
-                                          child: Text(
-                                              'Loaded data: ${snapshot.data}'),
-                                        ),
-                                      );
+                                      return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            RichText(
+                                              text: TextSpan(
+                                                text: '昵称: ',
+                                                style: const TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 0.45),
+                                                ),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text:
+                                                        '${snapshot.data?.name}',
+                                                    style: DefaultTextStyle.of(
+                                                            context)
+                                                        .style,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            RichText(
+                                              text: TextSpan(
+                                                text: 'Email: ',
+                                                style: const TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 0.45),
+                                                ),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text:
+                                                        '${snapshot.data?.email}',
+                                                    style: DefaultTextStyle.of(
+                                                            context)
+                                                        .style,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ]);
                                     }
                                   },
-                                ),
+                                )
                               ],
                             ),
                             SizedBox(
