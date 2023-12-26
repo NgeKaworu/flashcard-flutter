@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:08
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-25 13:50:54
+ * @LastEditTime: 2023-12-26 13:31:45
  * @FilePath: /flashcard/lib/src/screen/account.dart
  * @Description: 
  * 
@@ -13,6 +13,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flashcard/src/auth.dart';
+import 'package:flashcard/src/theme/main_theme.dart';
 import 'package:flashcard/src/widget/loding_elevated_button.dart';
 import 'package:flashcard/src/widget/loding_text_bottom.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-const phi = 1.618, width = 357.0, height = width * phi;
+
 
 const entryMap = {
   'register': '注册',
