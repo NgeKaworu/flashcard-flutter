@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-25 13:42:30
+ * @LastEditTime: 2023-12-28 13:42:19
  * @FilePath: /flashcard/lib/src/route.dart
  * @Description: 
  * 
@@ -23,9 +23,9 @@ import 'package:talker_flutter/talker_flutter.dart';
 final appShellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'app shell');
 
 final homeRoutes = {
-  "/home/record": const Record(),
-  "/home/review": const Review(),
-  "/home/my": const My(),
+  "/home/record": (GoRouterState state) => Record(routerState: state),
+  "/home/review": (state) => const Review(),
+  "/home/my": (state) => const My(),
 };
 
 GoRouter genRouter() {
@@ -55,7 +55,7 @@ GoRouter genRouter() {
                     return FadeTransitionPage<dynamic>(
                       key: state.pageKey,
                       child: Builder(builder: (context) {
-                        return entry.value;
+                        return entry.value(state);
                       }),
                     );
                   },
