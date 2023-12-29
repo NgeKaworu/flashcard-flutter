@@ -2,7 +2,7 @@
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:33:16
  * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-28 13:42:19
+ * @LastEditTime: 2023-12-29 13:45:40
  * @FilePath: /flashcard/lib/src/route.dart
  * @Description: 
  * 
@@ -34,7 +34,7 @@ GoRouter genRouter() {
     observers: [TalkerRouteObserver(GetIt.instance<Talker>())],
     refreshListenable: auth,
     debugLogDiagnostics: true,
-    initialLocation: '/home/record',
+    initialLocation: '/home/record?sort=createAt&orderby=-1&type=enable',
     redirect: (context, state) {
       final signedIn = Auth.of(context).signedIn;
       GetIt.instance<Talker>().info('signedIn: $signedIn');
@@ -51,6 +51,7 @@ GoRouter genRouter() {
         routes: homeRoutes.entries
             .map((entry) => GoRoute(
                   path: entry.key,
+                  name: entry.key,
                   pageBuilder: (context, state) {
                     return FadeTransitionPage<dynamic>(
                       key: state.pageKey,
