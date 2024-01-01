@@ -1,15 +1,20 @@
 /*
  * @Date: 2023-12-04 13:04:42
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-29 14:02:51
- * @FilePath: /flashcard/lib/src/screen/record.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-31 03:03:24
+ * @FilePath: \flashcard-flutter\lib\src\screen\record.dart
  */
 // Copyright 2021, the Flutter project authors. Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:dio/dio.dart';
+import 'package:flashcard/src/model/record.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flashcard/src/model/record.dart' as record_model;
 
 const tabs = [
   Tab(
@@ -74,6 +79,12 @@ class _RecordState extends State<Record> with SingleTickerProviderStateMixin {
         .goNamed("/home/record", queryParameters: queryParameters);
   }
 
+  Future<List<record_model.Record>> _loadData() async {
+    final response = await GetIt.instance<Dio>().get("/flashcard/record/list");
+    final data = response.data['data'] as List;
+    return compute(parseRecords, data);
+  }
+
   @override
   Widget build(BuildContext context) {
     _tabController.index =
@@ -92,7 +103,19 @@ class _RecordState extends State<Record> with SingleTickerProviderStateMixin {
           tabs: tabs,
         ),
       ),
-      body: const Text('New'),
+      body: FutureBuilder<List<record_model.Record>>(
+        future: _loadData(),
+        builder: (BuildContext context,
+            AsyncSnapshot<List<record_model.Record>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Text("${snapshot.data?[0].source}");
+          }
+        },
+      ),
     );
   }
 }

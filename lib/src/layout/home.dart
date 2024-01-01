@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-04 13:38:59
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-25 13:43:12
- * @FilePath: /flashcard/lib/src/layout/home.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-29 21:12:47
+ * @FilePath: \flashcard-flutter\lib\src\layout\home.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -42,7 +42,7 @@ class HomeScaffold extends StatelessWidget {
         selectedIndex: selectedIndex,
         body: child,
         onDestinationSelected: (idx) {
-          if (idx == 0) goRouter.go('/home/record');
+          if (idx == 0) goRouter.go('/home/record?sort=createAt&orderby=-1&type=enable');
           if (idx == 1) goRouter.go('/home/review');
           if (idx == 2) goRouter.go('/home/my');
         },

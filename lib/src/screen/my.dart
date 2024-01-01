@@ -1,9 +1,9 @@
 /*
  * @Author: fuRan NgeKaworu@gmail.com
  * @Date: 2023-12-01 13:50:16
- * @LastEditors: fuRan NgeKaworu@gmail.com
- * @LastEditTime: 2023-12-26 18:19:03
- * @FilePath: /flashcard/lib/src/screen/my.dart
+ * @LastEditors: NgeKaworu NgeKaworu@163.com
+ * @LastEditTime: 2023-12-30 23:33:01
+ * @FilePath: \flashcard-flutter\lib\src\screen\my.dart
  * @Description: 
  * 
  * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flashcard/src/auth.dart';
 import 'package:flashcard/src/model/user.dart';
 import 'package:flashcard/src/theme/main_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -23,11 +24,10 @@ class My extends StatefulWidget {
 }
 
 class _MyState extends State<My> {
-  Future<User> _loadData() async =>
-      User.fromJson((await GetIt.instance<Dio>().get(
-        "user-center/profile",
-      ))
-          .data['data']);
+  Future<User> _loadData() async => compute(
+      User.fromJson,
+      (await GetIt.instance<Dio>().get("user-center/profile")).data["data"]
+          as Map<String, dynamic>);
 
   @override
   Widget build(BuildContext context) {
